@@ -24,9 +24,11 @@ export default class HomeScreen extends React.Component {
     this._addHabit = this._addHabit.bind(this);
     this._closeModal = this._closeModal.bind(this);
     this._saveHabit = this._saveHabit.bind(this);
+    this._completeHabit = this._completeHabit.bind(this);
+    this.saveHabits = this.saveHabits.bind(this);
 
     this.state = {
-      habits: ["Read", "Stretch", "Track Goals"],
+      habits: [],
       modalVisible: false
     };
   }
@@ -45,8 +47,8 @@ export default class HomeScreen extends React.Component {
             renderItem={this._renderItem}
             renderHiddenItem={(data, rowMap) => (
               <View style={styles.rowBack}>
-                <Text>Left</Text>
-                <Text>Right</Text>
+                <Text onPress={() => this._removeHabit(data.item)} style={styles.deleteHabit}>Delete</Text>
+                <Text onPress={() => this._completeHabit(data.item)} style={styles.completeHabit}>Complete</Text>
               </View>
             )}
             keyExtractor={this._keyExtractor}
@@ -89,11 +91,16 @@ export default class HomeScreen extends React.Component {
     this._retrieveData();
   }
 
-  _renderItem = ({ item }) => (
-    <Habit habit={item}></Habit>
-  );
+  _renderItem = ({ item }) => {
+    if (new Date(item.lastCompleted).getDate() != new Date().getDate()) {
+      return <Habit habit={item.title}></Habit>;
+    }
+    else {
+      return <Text style={{ display: 'none' }}></Text>;
+    }
+  };
 
-  _keyExtractor = (item) => item;
+  _keyExtractor = (item) => item.title;
 
   _storeData = async () => {
     try {
@@ -120,15 +127,21 @@ export default class HomeScreen extends React.Component {
     this.setState({ modalVisible: true });
   }
 
-  _saveHabit(habit) {
+  _saveHabit(title) {
+    let today = new Date();
+    let habit = { title: title.trim(), lastCompleted: today.setDate(today.getDate() - 1) }
     let updatedHabits = this.state.habits.slice();
-    updatedHabits.push(habit.trim());
+    updatedHabits.push(habit);
 
-    this.setState({ habits: updatedHabits }, () => {
-      this._storeData();
-    });
+    this.saveHabits(updatedHabits);
 
     this._closeModal();
+  }
+
+  saveHabits(habits) {
+    this.setState({ habits: habits }, () => {
+      this._storeData();
+    });
   }
 
   _removeHabit(habit) {
@@ -136,9 +149,17 @@ export default class HomeScreen extends React.Component {
     var index = habits.indexOf(habit);
     if (index > -1) {
       habits.splice(index, 1);
-      this.setState({ habits: habits }, () => {
-        this._storeData();
-      });
+      this.saveHabits(habits);
+    }
+  }
+
+  _completeHabit(habit) {
+    let habits = this.state.habits.slice();
+    var index = habits.indexOf(habit);
+    if (index > -1) {
+      console.log(habits[index])
+      habits[index].lastCompleted = new Date();
+      this.saveHabits(habits);
     }
   }
 
@@ -168,5 +189,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 15,
     paddingRight: 15
+  },
+  deleteHabit: {
+    backgroundColor: 'red'
+  },
+  completeHabit: {
+    backgroundColor: 'green'
   }
 });
