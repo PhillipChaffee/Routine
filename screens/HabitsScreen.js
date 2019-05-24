@@ -3,14 +3,12 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Modal,
   Text,
-  TextInput,
-  Button,
   AsyncStorage
 } from 'react-native';
 import { Icon } from 'expo';
 import Habit from '../components/Habit';
+import AddHabitModal from '../components/AddHabitModal';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 export default class HomeScreen extends React.Component {
@@ -55,32 +53,7 @@ export default class HomeScreen extends React.Component {
             rightOpenValue={-75}
           />
         </ScrollView>
-        <Modal
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
-          <View style={{ marginTop: 22 }}>
-            <View>
-              <Text>Habit Name</Text>
-              <TextInput onChangeText={(text) => this.setState({ newHabit: text })}
-                value={this.state.newHabit} style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
-              <Button
-                onPress={this._closeModal}
-                title="Cancel"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                onPress={() => this._saveHabit(this.state.newHabit)}
-                title="Save"
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-              />
-            </View>
-          </View>
-        </Modal>
+        <AddHabitModal modalVisible={this.state.modalVisible} saveHabit={this._saveHabit} closeModal={this._closeModal}></AddHabitModal>
         <Icon.Ionicons name='ios-add-circle-outline' size={60} color={'#000'} style={styles.addHabitButton} onPress={() => this._addHabit()}></Icon.Ionicons>
       </View>
     );
@@ -165,7 +138,7 @@ export default class HomeScreen extends React.Component {
   }
 
   _closeModal() {
-    this.setState({ modalVisible: false, newHabit: '' });
+    this.setState({ modalVisible: false });
   }
 }
 
