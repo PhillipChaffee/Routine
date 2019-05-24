@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   View,
@@ -47,8 +46,8 @@ export default class HomeScreen extends React.Component {
             renderItem={this._renderItem}
             renderHiddenItem={(data, rowMap) => (
               <View style={styles.rowBack}>
-                <Text onPress={() => this._removeHabit(data.item)} style={styles.deleteHabit}>Delete</Text>
-                <Text onPress={() => this._completeHabit(data.item)} style={styles.completeHabit}>Complete</Text>
+                <Text onPress={() => this._removeHabit(data.item)} style={styles.deleteHabit}>❌</Text>
+                <Text onPress={() => this._completeHabit(data.item)} style={styles.completeHabit}>✔️</Text>
               </View>
             )}
             keyExtractor={this._keyExtractor}
@@ -128,6 +127,8 @@ export default class HomeScreen extends React.Component {
   }
 
   _saveHabit(title) {
+    if (!title)
+      return;
     let today = new Date();
     let habit = { title: title.trim(), lastCompleted: today.setDate(today.getDate() - 1) }
     let updatedHabits = this.state.habits.slice();
@@ -191,9 +192,19 @@ const styles = StyleSheet.create({
     paddingRight: 15
   },
   deleteHabit: {
-    backgroundColor: 'red'
+    backgroundColor: '#f1f1f1',
+    overflow: 'hidden',
+    fontSize: 30,
+    padding: 13.9995,
+    paddingRight: 40,
+    borderRadius: 10
   },
   completeHabit: {
-    backgroundColor: 'green'
+    backgroundColor: '#f1f1f1',
+    overflow: 'hidden',
+    fontSize: 30,
+    padding: 13.9995,
+    paddingLeft: 40,
+    borderRadius: 10
   }
 });
