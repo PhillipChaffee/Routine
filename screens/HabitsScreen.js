@@ -7,9 +7,9 @@ import {
   AsyncStorage
 } from 'react-native';
 import { Icon } from 'expo';
-import Habit from '../components/Habit';
 import AddHabitModal from '../components/AddHabitModal';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import HabitsTodo from '../components/HabitsTodo';
+import HabitsCompleted from '../components/HabitsCompleted';
 
 export default class HomeScreen extends React.Component {
 
@@ -19,6 +19,7 @@ export default class HomeScreen extends React.Component {
     this._storeData = this._storeData.bind(this);
     this._retrieveData = this._retrieveData.bind(this);
     this._addHabit = this._addHabit.bind(this);
+    this._removeHabit = this._removeHabit.bind(this);
     this._closeModal = this._closeModal.bind(this);
     this._saveHabit = this._saveHabit.bind(this);
     this._completeHabit = this._completeHabit.bind(this);
@@ -38,20 +39,9 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <SwipeListView
-            useFlatList
-            data={this.state.habits}
-            renderItem={this._renderItem}
-            renderHiddenItem={(data, rowMap) => (
-              <View style={styles.rowBack}>
-                <Text onPress={() => this._removeHabit(data.item)} style={styles.deleteHabit}>❌</Text>
-                <Text onPress={() => this._completeHabit(data.item)} style={styles.completeHabit}>✔️</Text>
-              </View>
-            )}
-            keyExtractor={this._keyExtractor}
-            leftOpenValue={75}
-            rightOpenValue={-75}
-          />
+          <HabitsTodo habits={this.state.habits} removeHabit={this._removeHabit} completeHabit={this._completeHabit}></HabitsTodo>
+          <Text style={styles.completedHabits}>Completed</Text>
+          <HabitsCompleted habits={this.state.habits}></HabitsCompleted>
         </ScrollView>
         <AddHabitModal modalVisible={this.state.modalVisible} saveHabit={this._saveHabit} closeModal={this._closeModal}></AddHabitModal>
         <Icon.Ionicons name='ios-add-circle-outline' size={60} color={'#000'} style={styles.addHabitButton} onPress={() => this._addHabit()}></Icon.Ionicons>
@@ -62,17 +52,6 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     this._retrieveData();
   }
-
-  _renderItem = ({ item }) => {
-    if (new Date(item.lastCompleted).getDate() != new Date().getDate()) {
-      return <Habit habit={item.title}></Habit>;
-    }
-    else {
-      return <Text style={{ display: 'none' }}></Text>;
-    }
-  };
-
-  _keyExtractor = (item) => item.title;
 
   _storeData = async () => {
     try {
@@ -89,6 +68,7 @@ export default class HomeScreen extends React.Component {
       const value = await AsyncStorage.getItem('HABITS');
       if (value !== null) {
         this.setState({ habits: JSON.parse(value) });
+        console.log(JSON.parse(value))
       }
     } catch (error) {
       console.log(error);
@@ -150,34 +130,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     margin: 20
   },
+  completedHabits: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    fontSize: 16
+  },
   addHabitButton: {
     alignSelf: 'flex-end',
     marginRight: 20,
     marginBottom: 10
-  },
-  rowBack: {
-    alignItems: 'center',
-    backgroundColor: '#f1f1f1',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
-    paddingRight: 15
-  },
-  deleteHabit: {
-    backgroundColor: '#f1f1f1',
-    overflow: 'hidden',
-    fontSize: 30,
-    padding: 13.9995,
-    paddingRight: 40,
-    borderRadius: 10
-  },
-  completeHabit: {
-    backgroundColor: '#f1f1f1',
-    overflow: 'hidden',
-    fontSize: 30,
-    padding: 13.9995,
-    paddingLeft: 40,
-    borderRadius: 10
   }
 });
