@@ -23,6 +23,7 @@ export default class HomeScreen extends React.Component {
     this._closeModal = this._closeModal.bind(this);
     this._saveHabit = this._saveHabit.bind(this);
     this._completeHabit = this._completeHabit.bind(this);
+    this._undoCompletedHabit = this._undoCompletedHabit.bind(this);
     this.saveHabits = this.saveHabits.bind(this);
 
     this.state = {
@@ -41,7 +42,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <HabitsTodo habits={this.state.habits} removeHabit={this._removeHabit} completeHabit={this._completeHabit}></HabitsTodo>
           <Text style={styles.completedHabits}>Completed</Text>
-          <HabitsCompleted habits={this.state.habits}></HabitsCompleted>
+          <HabitsCompleted habits={this.state.habits} removeHabit={this._removeHabit} undoCompleted={this._undoCompletedHabit}></HabitsCompleted>
         </ScrollView>
         <AddHabitModal modalVisible={this.state.modalVisible} saveHabit={this._saveHabit} closeModal={this._closeModal}></AddHabitModal>
         <Icon.Ionicons name='ios-add-circle-outline' size={60} color={'#000'} style={styles.addHabitButton} onPress={() => this._addHabit()}></Icon.Ionicons>
@@ -111,8 +112,17 @@ export default class HomeScreen extends React.Component {
     let habits = this.state.habits.slice();
     var index = habits.indexOf(habit);
     if (index > -1) {
-      console.log(habits[index])
       habits[index].lastCompleted = new Date();
+      this.saveHabits(habits);
+    }
+  }
+
+  _undoCompletedHabit(habit) {
+    let habits = this.state.habits.slice();
+    var index = habits.indexOf(habit);
+    if (index > -1) {
+      let today = new Date();
+      habits[index].lastCompleted = today.setDate(today.getDate() - 1);
       this.saveHabits(habits);
     }
   }

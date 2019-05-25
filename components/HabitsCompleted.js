@@ -17,7 +17,7 @@ export default class HabitsCompleted extends React.Component {
                 renderHiddenItem={(data, rowMap) => (
                     <View style={styles.rowBack}>
                         <Text onPress={() => this.props.removeHabit(data.item)} style={styles.deleteHabit}>❌</Text>
-                        <Text onPress={() => this.props.completeHabit(data.item)} style={styles.completeHabit}>✔️</Text>
+                        <Text onPress={() => this.props.undoCompleted(data.item)} style={styles.completeHabit}>Undo</Text>
                     </View>
                 )}
                 keyExtractor={this._keyExtractor}
@@ -60,8 +60,9 @@ const styles = StyleSheet.create({
     completeHabit: {
         backgroundColor: '#f1f1f1',
         overflow: 'hidden',
-        fontSize: 30,
+        fontSize: 20,
         padding: 13.9995,
+        paddingRight: 5,
         paddingLeft: 40,
         borderRadius: 10
     }
