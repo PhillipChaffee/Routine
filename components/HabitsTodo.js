@@ -16,8 +16,8 @@ export default class HabitsTodo extends React.Component {
                 renderItem={this._renderItem}
                 renderHiddenItem={(data, rowMap) => (
                     <View style={styles.rowBack}>
-                        <Text onPress={() => this.props.removeHabit(data.item)} style={styles.deleteHabit}>❌</Text>
-                        <Text onPress={() => this.props.completeHabit(data.item)} style={styles.completeHabit}>✔️</Text>
+                        <Text onPress={() => this.props.removeHabit(data.item)} style={styles.deleteHabit}>Delete</Text>
+                        <Text onPress={() => this.props.completeHabit(data.item)} style={styles.completeHabit}>Done</Text>
                     </View>
                 )}
                 keyExtractor={this._keyExtractor}
@@ -52,17 +52,19 @@ const styles = StyleSheet.create({
     deleteHabit: {
         backgroundColor: '#f1f1f1',
         overflow: 'hidden',
-        fontSize: 30,
+        fontSize: 20,
         padding: 13.9995,
         paddingRight: 40,
+        paddingLeft: 5,
         borderRadius: 10
     },
     completeHabit: {
         backgroundColor: '#f1f1f1',
         overflow: 'hidden',
-        fontSize: 30,
+        fontSize: 20,
         padding: 13.9995,
         paddingLeft: 40,
+        paddingRight: 5,
         borderRadius: 10
     }
 });

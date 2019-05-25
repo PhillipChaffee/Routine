@@ -9,26 +9,34 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 
 export default class HabitsCompleted extends React.Component {
     render() {
+        const completedHabits = this.props.habits.filter(habit => this.completedToday(habit));
+        if (!completedHabits || completedHabits.length === 0) {
+            return null;
+        }
+
         return (
-            <SwipeListView
-                useFlatList
-                data={this.props.habits}
-                renderItem={this._renderItem}
-                renderHiddenItem={(data, rowMap) => (
-                    <View style={styles.rowBack}>
-                        <Text onPress={() => this.props.removeHabit(data.item)} style={styles.deleteHabit}>❌</Text>
-                        <Text onPress={() => this.props.undoCompleted(data.item)} style={styles.completeHabit}>Undo</Text>
-                    </View>
-                )}
-                keyExtractor={this._keyExtractor}
-                leftOpenValue={75}
-                rightOpenValue={-75}
-            />
+            <View>
+                <Text style={styles.completedHabits}>Completed</Text>
+                <SwipeListView
+                    useFlatList
+                    data={this.props.habits}
+                    renderItem={this._renderItem}
+                    renderHiddenItem={(data, rowMap) => (
+                        <View style={styles.rowBack}>
+                            <Text onPress={() => this.props.removeHabit(data.item)} style={styles.deleteHabit}>Delete</Text>
+                            <Text onPress={() => this.props.undoCompleted(data.item)} style={styles.undoHabit}>Undo</Text>
+                        </View>
+                    )}
+                    keyExtractor={this._keyExtractor}
+                    leftOpenValue={75}
+                    rightOpenValue={-75}
+                />
+            </View>
         );
     }
 
     _renderItem = ({ item }) => {
-        if (new Date(item.lastCompleted).getDate() === new Date().getDate()) {
+        if (this.completedToday(item)) {
             return <Habit habit={item.title}></Habit>;
         }
         else {
@@ -37,9 +45,22 @@ export default class HabitsCompleted extends React.Component {
     };
 
     _keyExtractor = (item) => item.title;
+
+    completedToday(habit) {
+        if (new Date(habit.lastCompleted).getDate() === new Date().getDate()) {
+            return true;
+        }
+
+        return false;
+    }
 }
 
 const styles = StyleSheet.create({
+    completedHabits: {
+        alignSelf: 'center',
+        marginVertical: 10,
+        fontSize: 16
+    },
     rowBack: {
         alignItems: 'center',
         backgroundColor: '#f1f1f1',
@@ -52,12 +73,13 @@ const styles = StyleSheet.create({
     deleteHabit: {
         backgroundColor: '#f1f1f1',
         overflow: 'hidden',
-        fontSize: 30,
+        fontSize: 20,
         padding: 13.9995,
+        paddingLeft: 5,
         paddingRight: 40,
         borderRadius: 10
     },
-    completeHabit: {
+    undoHabit: {
         backgroundColor: '#f1f1f1',
         overflow: 'hidden',
         fontSize: 20,

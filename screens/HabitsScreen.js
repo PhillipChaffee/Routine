@@ -38,14 +38,17 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <HabitsTodo habits={this.state.habits} removeHabit={this._removeHabit} completeHabit={this._completeHabit}></HabitsTodo>
-          <Text style={styles.completedHabits}>Completed</Text>
-          <HabitsCompleted habits={this.state.habits} removeHabit={this._removeHabit} undoCompleted={this._undoCompletedHabit}></HabitsCompleted>
-        </ScrollView>
-        <AddHabitModal modalVisible={this.state.modalVisible} saveHabit={this._saveHabit} closeModal={this._closeModal}></AddHabitModal>
-        <Icon.Ionicons name='ios-add-circle-outline' size={60} color={'#000'} style={styles.addHabitButton} onPress={() => this._addHabit()}></Icon.Ionicons>
+      <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
+            <HabitsTodo habits={this.state.habits} removeHabit={this._removeHabit} completeHabit={this._completeHabit}></HabitsTodo>
+            <HabitsCompleted habits={this.state.habits} removeHabit={this._removeHabit} undoCompleted={this._undoCompletedHabit}></HabitsCompleted>
+          </ScrollView>
+          <AddHabitModal modalVisible={this.state.modalVisible} saveHabit={this._saveHabit} closeModal={this._closeModal}></AddHabitModal>
+        </View>
+        <View style={styles.addHabitOverlay}>
+          <Icon.Ionicons name='ios-add-circle-outline' size={60} color={'#000'} style={styles.addHabitButton} onPress={() => this._addHabit()}></Icon.Ionicons>
+        </View>
       </View>
     );
   }
@@ -89,8 +92,6 @@ export default class HomeScreen extends React.Component {
     updatedHabits.push(habit);
 
     this.saveHabits(updatedHabits);
-
-    this._closeModal();
   }
 
   saveHabits(habits) {
@@ -135,18 +136,26 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  scrollContainer: {
+    flex: 1,
+    height: '100%',
     backgroundColor: '#f1f1f1'
   },
   contentContainer: {
     margin: 20
   },
-  completedHabits: {
-    alignSelf: 'center',
-    marginVertical: 10,
-    fontSize: 16
+  addHabitOverlay: {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   addHabitButton: {
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     marginRight: 20,
     marginBottom: 10
   }
