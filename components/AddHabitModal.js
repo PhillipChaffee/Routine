@@ -37,7 +37,7 @@ export default class AddHabitModal extends React.Component {
                             accessibilityLabel="Learn more about this purple button"
                         />
                         <Button
-                            onPress={() => this.props.saveHabit(this.state.newHabit)}
+                            onPress={() => { this.props.saveHabit(this.state.newHabit); this.closeModal(); }}
                             title="Save"
                             color="#841584"
                             accessibilityLabel="Learn more about this purple button"
