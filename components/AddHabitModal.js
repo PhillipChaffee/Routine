@@ -56,6 +56,7 @@ export default class AddHabitModal extends React.Component {
 
 const styles = StyleSheet.create({
     modal: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         height: '100%',
         width: '100%',
         alignContent: 'center',
